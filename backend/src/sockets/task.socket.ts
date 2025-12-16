@@ -2,7 +2,15 @@ import { Server } from "socket.io";
 
 export const registerTaskSocket = (io: Server) => {
   io.on("connection", (socket) => {
-    console.log("User connected:", socket.id);
+    const userId = socket.handshake.auth.userId;
+    if (userId) {
+      socket.join(userId);
+      console.log(`🔗 User connected: ${userId}`);
+    }
+
+    socket.on("disconnect", () => {
+      console.log("❌ User disconnected");
+    });
 
     socket.on("taskUpdated", (task) => {
       io.emit("taskUpdated", task);

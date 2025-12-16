@@ -4,8 +4,12 @@ import { authMiddleware } from "../middleware/auth.middleware";
 
 const router = Router();
 
-router.post("/", authMiddleware, controller.create);
 router.get("/", authMiddleware, controller.getAll);
+router.get("/assigned", authMiddleware, controller.getAssignedTasks);
+router.get("/created", authMiddleware, controller.getCreatedTasks);
+router.get("/overdue", authMiddleware, controller.getOverdueTasks);
+
+router.post("/", authMiddleware, controller.create);
 router.patch("/:id", authMiddleware, controller.update);
 router.delete("/:id", authMiddleware, controller.delete);
 

@@ -11,6 +11,8 @@ import app from "./app";
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI!;
 
+// 🔥 Exported here so services can import it
+export let io: Server;
 
 const connectWithRetry = () => {
   console.log("MongoDB: Attempting to connect...");
@@ -20,7 +22,6 @@ const connectWithRetry = () => {
     .then(() => {
       console.log("MongoDB Connected Successfully");
 
-      // Start server only AFTER DB is ready
       startServer();
     })
     .catch((err) => {
@@ -34,18 +35,20 @@ const connectWithRetry = () => {
 let serverStarted = false;
 
 const startServer = () => {
-  if (serverStarted) return; 
+  if (serverStarted) return;
   serverStarted = true;
 
   const server = http.createServer(app);
 
-  const io = new Server(server, {
+  // ⭐ Assign and export io
+  io = new Server(server, {
     cors: {
       origin: process.env.CLIENT_URL,
       credentials: true,
     },
   });
 
+  // Register socket listeners
   registerTaskSocket(io);
 
   server.listen(PORT, () => {
@@ -63,6 +66,5 @@ const startServer = () => {
     });
   });
 };
-
 
 connectWithRetry();
