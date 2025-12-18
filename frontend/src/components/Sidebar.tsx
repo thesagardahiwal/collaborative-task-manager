@@ -20,7 +20,7 @@ export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
   };
 
   const navLinks = (
-    <nav className="flex flex-col mt-4 gap-1 px-4">
+    <nav className="flex lg:bg-white shadow-sm rounded-2xl py-6 m-2 flex-col mt-4 gap-1 px-4">
       <NavLink
         to="/dashboard"
         onClick={handleLinkClick}
@@ -75,20 +75,23 @@ export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
   return (
     <>
       {/* Desktop Sidebar */}
-      <div className="hidden sticky top-0 lg:flex w-64 h-screen bg-white border-r shadow-sm flex-col">
-        <h1 className="text-2xl font-bold px-6 py-4 border-b">CollabTask</h1>
+      <div className="hidden sticky top-0 lg:flex w-64 h-screen flex-col">
+        <div className="flex justify-center bg-white px-6 py-4 m-4 items-center rounded-2xl gap-2">
+          <img src="/logo.png" alt="collab-logo" height={50} width={50} />
+          <h1 className="text-2xl text-center font-bold">CollabTask</h1>
+        </div>
         {navLinks}
         {logoutButton}
       </div>
 
       {/* Mobile Sidebar */}
       <div
-        className={`lg:hidden fixed top-0 left-0 h-screen bg-white border-r shadow-sm flex flex-col z-50 transition-transform duration-300 ease-in-out ${
+        className={`lg:hidden fixed top-0 left-0 h-screen bg-white shadow-sm flex flex-col z-50 transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         } w-64`}
       >
-        <div className="flex items-center justify-between px-6 py-5 border-b">
-          <h1 className="text-2xl font-bold">Task Manager</h1>
+        <div className="flex items-center justify-between px-6 py-5">
+          <h1 className="text-2xl font-bold">CollabTask</h1>
           <button
             onClick={handleLinkClick}
             className="p-2 rounded-lg hover:bg-gray-100 transition-colors"

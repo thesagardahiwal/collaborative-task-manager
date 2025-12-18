@@ -48,7 +48,7 @@ export default function Navbar({ onMenuClick, onNotificationClick, notificationC
   };
 
   return (
-    <nav className="h-16 bg-white border-b shadow-sm flex items-center justify-between px-4 lg:px-6 fixed left-0 lg:left-64 right-0 top-0 z-10">
+    <nav className="h-16 flex items-center justify-between px-4 lg:px-6 fixed left-0 lg:left-64 right-0 top-0 z-10">
       {/* Left side - Mobile menu button and title */}
       <div className="flex items-center gap-4">
         {/* Mobile menu button - only visible on mobile */}
@@ -68,7 +68,7 @@ export default function Navbar({ onMenuClick, onNotificationClick, notificationC
       </div>
 
       {/* Right side - User profile */}
-      <div className="flex items-center justify-center gap-2">
+      <div className="flex bg-white rounded-2xl px-4 shadow-xl items-center justify-center gap-2">
         <button
           onClick={onNotificationClick}
           className="relative p-2 rounded-lg hover:bg-gray-100 transition"

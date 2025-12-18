@@ -24,12 +24,12 @@ export default function NotificationDrawer({ open, onClose }: Props) {
 
       {/* Drawer */}
       <aside
-        className={`fixed top-0 right-0 h-full w-96 bg-white z-50 shadow-xl
+        className={`fixed top-0 right-0 h-full w-96 z-50
         transform transition-transform duration-300
         ${open ? "translate-x-0" : "translate-x-full"}`}
       >
         {/* Header */}
-        <div className="h-16 flex items-center justify-between px-4 border-b">
+        <div className="h-16 bg-white m-2 rounded-2xl flex items-center justify-between px-4">
           <div className="flex items-center gap-2">
             <Bell className="w-5 h-5 text-gray-700" />
             <h2 className="font-semibold text-gray-800">
@@ -43,7 +43,7 @@ export default function NotificationDrawer({ open, onClose }: Props) {
         </div>
 
         {/* Content */}
-        <div className="p-4 space-y-3 overflow-y-auto h-[calc(100%-4rem)]">
+        <div className="p-4 bg-white rounded-2xl m-2 space-y-3 overflow-y-auto h-[calc(100%-4rem)]">
           {notifications.length === 0 && (
             <p className="text-sm text-gray-500 text-center mt-10">
               No notifications yet

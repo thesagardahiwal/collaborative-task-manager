@@ -3,6 +3,7 @@ import TaskCard from "../components/TaskCard";
 import { useUsers } from "../hooks/useUsers";
 import { useState, useEffect } from "react";
 import { Plus, Filter, Search, Calendar, Loader2, AlertCircle } from "lucide-react";
+import { toast } from "react-toastify";
 
 export default function Tasks() {
   const { tasksQuery, createTaskMutation } = useTasks();
@@ -163,7 +164,16 @@ export default function Tasks() {
       return;
     }
     
-    createTaskMutation.mutate(form);
+    const payload = {
+      ...form,
+      assignedToId: (form.assignedToId.length > 2 ? form.assignedToId : undefined)
+    };
+
+    createTaskMutation.mutate(payload, {
+      onError: (res) => {
+        toast(res.message);
+      }
+    });
     resetForm();
     setShowCreateForm(false);
   };

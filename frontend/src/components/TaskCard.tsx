@@ -460,7 +460,7 @@ export default function TaskCard({ task }: TaskCardProps) {
                 <select
                   value={task.assignedToId?._id || ""}
                   onChange={(e: React.ChangeEvent<HTMLSelectElement>) => 
-                    updateTask({ assignedToId: e.target.value || undefined })
+                    updateTask({ assignedToId: e.target.value || null })
                   }
                   className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                   disabled={updateTaskMutation.isPending}

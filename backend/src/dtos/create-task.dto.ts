@@ -6,7 +6,7 @@ export const CreateTaskDto = z.object({
   dueDate: z.string(),
   priority: z.enum(["Low", "Medium", "High", "Urgent"]),
   status: z.enum(["To Do", "In Progress", "Review", "Completed"]).optional(),
-  assignedToId: z.string().optional()
+  assignedToId: z.string().nullable().optional()
 });
 
 export type CreateTaskInput = z.infer<typeof CreateTaskDto>;
