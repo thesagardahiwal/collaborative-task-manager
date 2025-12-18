@@ -18,6 +18,7 @@ import {
   Loader2
 } from "lucide-react";
 import type { ITask, IUser } from "../types/task.type";
+import { useAuthContext } from "../context/AuthContext";
 
 
 interface TaskCardProps {
@@ -36,12 +37,12 @@ interface StatusColorConfig extends Omit<ColorConfig, "dot"> {
 }
 
 export default function TaskCard({ task }: TaskCardProps) {
-  const { updateTaskMutation } = useTasks();
+  const { updateTaskMutation, deleteTaskMutation } = useTasks();
   const { data: users, isLoading: usersLoading } = useUsers();
   const [editing, setEditing] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
   const [showOptions, setShowOptions] = useState<boolean>(false);
-
+  const { user } = useAuthContext();
   // Get assignee and creator (check both populated object and ID)
   const assignee = task.assignedToId;
   const creator = task.creatorId;
@@ -59,9 +60,15 @@ export default function TaskCard({ task }: TaskCardProps) {
     }
   };
 
-  const handleDelete = () => {
+  const handleDelete = (taskId : string) => {
     if (window.confirm("Are you sure you want to delete this task?")) {
-      updateTask({ status: "Completed", _delete: true } as any);
+      deleteTaskMutation.mutate({
+        id: taskId
+      });
+
+      if (editing) {
+        setEditing(false);
+      }
     }
   };
 
@@ -221,17 +228,21 @@ export default function TaskCard({ task }: TaskCardProps) {
                   <Edit2 className="w-4 h-4" />
                   Edit Task
                 </button>
-                <div className="border-t my-1" />
-                <button
-                  onClick={() => {
-                    handleDelete();
-                    setShowOptions(false);
-                  }}
-                  className="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 text-sm"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  Delete Task
-                </button>
+                {task.creatorId._id === user?._id && (
+                  <>
+                    <div className="border-t my-1" />
+                    <button
+                      onClick={() => {
+                        handleDelete(task._id);
+                        setShowOptions(false);
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 text-sm"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      Delete Task
+                    </button>
+                  </>
+                )}
               </div>
             )}
           </div>

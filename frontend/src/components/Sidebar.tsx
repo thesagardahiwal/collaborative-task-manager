@@ -48,6 +48,19 @@ export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
       >
         Tasks
       </NavLink>
+      <NavLink
+        to="/profile"
+        onClick={handleLinkClick}
+        className={({ isActive }) =>
+          `px-4 py-2 rounded-lg font-medium transition-colors ${
+            isActive
+              ? "bg-blue-600 text-white"
+              : "text-gray-700 hover:bg-gray-100"
+          }`
+        }
+      >
+        Profile
+      </NavLink>
     </nav>
   );
 
@@ -63,7 +76,7 @@ export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
     <>
       {/* Desktop Sidebar */}
       <div className="hidden sticky top-0 lg:flex w-64 h-screen bg-white border-r shadow-sm flex-col">
-        <h1 className="text-2xl font-bold px-6 py-5 border-b">Task Manager</h1>
+        <h1 className="text-2xl font-bold px-6 py-4 border-b">CollabTask</h1>
         {navLinks}
         {logoutButton}
       </div>

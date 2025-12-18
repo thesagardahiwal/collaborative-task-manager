@@ -35,9 +35,14 @@ export default {
     }
   },
 
-  getAll: async (_: Request, res: Response, next: NextFunction) => {
+  getAll: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const tasks = await taskService.getAll();
+      const sortBy = req.query.sortBy === 'dueDate' ? 'dueDate' : 'createdAt';
+      const order = req.query.order === 'desc' ? -1 : 1;
+      const tasks = await taskService.getAll({
+        sortBy,
+        order
+      });
 
       return res.status(200).json({
         status: "success",
@@ -79,12 +84,7 @@ export default {
 
   delete: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const deleted = await taskService.delete(req.params.id);
-
-      if (!deleted) {
-        throw new AppError("Task not found", 404);
-      }
-
+      await taskService.delete(req.params.id);
       return res.status(200).json({
         status: "success",
         message: "Task deleted successfully"

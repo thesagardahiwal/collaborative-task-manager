@@ -3,9 +3,11 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuthContext } from "../context/AuthContext";
 
 export default function Login() {
     const { loginMutation } = useAuth();
+    const { setUser } = useAuthContext();
     const [form, setForm] = useState({ email: "", password: "" });
     const navigate = useNavigate();
     
@@ -13,7 +15,12 @@ export default function Login() {
         loginMutation.mutate(form, {
             onSuccess: (res: any) => {
                 localStorage.setItem("user", JSON.stringify(res.data.user));
+                setUser(res.data.user);
                 navigate("/dashboard");
+            },
+            onError: (res: any) => {
+                console.log(res);
+                alert("Invalid Creadentials")
             }
         });
     };

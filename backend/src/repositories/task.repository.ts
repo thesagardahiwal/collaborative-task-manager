@@ -5,10 +5,11 @@ export class TaskRepository {
     return TaskModel.create(data);
   }
 
-  findAll() {
-    return TaskModel.find().populate("creatorId assignedToId");
+  findAll({ sortBy, order }: { sortBy: string; order: 1 | -1 }) {
+    return TaskModel.find()
+      .sort({ [sortBy]: order })
+      .populate("creatorId assignedToId");
   }
-
   findById(id: string) {
     return TaskModel.findById(id);
   }
@@ -29,11 +30,15 @@ export class TaskRepository {
     return TaskModel.find({ creatorId: userId }).sort({ dueDate: 1 }).populate("creatorId assignedToId");
   }
 
-  findOverdue(userId: string) {
+  findOverdue(
+    userId: string,
+    sortOrder: "asc" | "desc" = "asc"
+  ) {
     return TaskModel.find({
-      assignedToId: userId,
       status: { $ne: "Completed" },
       dueDate: { $lt: new Date() }
-    }).sort({ dueDate: 1 }).populate("creatorId assignedToId");
+    })
+      .sort({ dueDate: sortOrder === "asc" ? 1 : -1 })
+      .populate("creatorId assignedToId");
   }
 }

@@ -1,9 +1,9 @@
-import { useTasks } from "../hooks/useTasks";
+import { useTasks, type SortOption } from "../hooks/useTasks";
 import TaskCard from "../components/TaskCard";
-import { 
-  TrendingUp, 
-  Clock, 
-  CheckCircle2, 
+import {
+  TrendingUp,
+  Clock,
+  CheckCircle2,
   AlertTriangle,
   Calendar,
   Filter,
@@ -17,9 +17,8 @@ import {
   UserCheck,
   AlertCircle,
   ArrowRight,
-  PlusCircle
 } from "lucide-react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import type { ITask, IUser } from "../types/task.type";
 import { Link } from "react-router-dom";
 
@@ -39,20 +38,22 @@ interface TaskFilters {
   status: string;
   priority: string;
   search: string;
+  sort: SortOption
 }
 
 export default function Dashboard() {
-  const { tasksQuery } = useTasks();
+  const { tasksQuery, updateSort } = useTasks();
   const [filters, setFilters] = useState<TaskFilters>({
     status: "all",
     priority: "all",
-    search: ""
+    search: "",
+    sort: { field: 'dueDate', order: 'asc' }
   });
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const currentUser = useMemo<string>(() => {
     const parsed = localStorage.getItem("user");
     if (!parsed) return "";
-    const user : IUser = JSON.parse(parsed);
+    const user: IUser = JSON.parse(parsed);
     return user._id;
   }, [])
   // Calculate dashboard statistics
@@ -78,10 +79,10 @@ export default function Dashboard() {
 
     const completedTasks = tasks.filter(task => task.status === "Completed");
     const pendingTasks = tasks.filter(task => task.status !== "Completed");
-    const highPriorityTasks = tasks.filter(task => 
+    const highPriorityTasks = tasks.filter(task =>
       task.priority === "High" || task.priority === "Urgent"
     );
-    
+
     const upcomingDeadlines = tasks.filter(task => {
       if (!task.dueDate || task.status === "Completed") return false;
       const dueDate = new Date(task.dueDate);
@@ -103,8 +104,8 @@ export default function Dashboard() {
       pendingTasks: pendingTasks.length,
       highPriorityTasks: highPriorityTasks.length,
       upcomingDeadlines,
-      averageCompletionTime: completedTasks.length > 0 ? 
-      Math.round(completedTasks.length / tasks.length * 100) : 0,
+      averageCompletionTime: completedTasks.length > 0 ?
+        Math.round(completedTasks.length / tasks.length * 100) : 0,
       createdTasks,
       assignedTasks,
       overdueTasks
@@ -114,18 +115,17 @@ export default function Dashboard() {
   // Filter tasks based on current filters
   const filteredTasks = useMemo(() => {
     if (!tasksQuery.data?.data?.tasks) return [];
-    
     return tasksQuery.data.data.tasks.filter((task: ITask) => {
       // Status filter
       if (filters.status !== "all" && task.status !== filters.status) {
         return false;
       }
-      
+
       // Priority filter
       if (filters.priority !== "all" && task.priority !== filters.priority) {
         return false;
       }
-      
+
       // Search filter
       if (filters.search) {
         const searchLower = filters.search.toLowerCase();
@@ -134,11 +134,14 @@ export default function Dashboard() {
           (task.description && task.description.toLowerCase().includes(searchLower))
         );
       }
-      
+
       return true;
     });
   }, [tasksQuery.data, filters]);
 
+  useEffect(() => {
+    updateSort(filters.sort);
+  }, [filters.sort]);
   const handleStatusFilter = (status: string) => {
     setFilters(prev => ({ ...prev, status }));
     setIsFilterOpen(false);
@@ -175,7 +178,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6 lg:p-8">
+    <div className="min-h-screen bg-gradient-to-br rounded-2xl from-gray-50 to-gray-100 p-4 md:p-6 lg:p-8">
       {/* Header */}
       <div className="mb-8">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
@@ -183,7 +186,7 @@ export default function Dashboard() {
             <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Dashboard Overview</h1>
             <p className="text-gray-600 mt-2">Track and manage all your tasks in one place</p>
           </div>
-          
+
           <div className="flex items-center gap-3">
             <span className="text-sm text-gray-500 hidden md:block">
               Last updated: {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -254,7 +257,7 @@ export default function Dashboard() {
         {/* Navigation Cards for Created, Assigned, Overdue Tasks */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           {/* Created Tasks Card */}
-          <Link 
+          <Link
             to="/dashboard/created"
             className="group bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 hover:border-blue-300 hover:scale-[1.02]"
           >
@@ -274,18 +277,17 @@ export default function Dashboard() {
                   {stats.createdTasks === 1 ? '1 task created' : `${stats.createdTasks} tasks created`}
                 </p>
               </div>
-              <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-                stats.createdTasks > 0 
-                  ? 'bg-blue-100 text-blue-800' 
+              <div className={`px-3 py-1 rounded-full text-sm font-medium ${stats.createdTasks > 0
+                  ? 'bg-blue-100 text-blue-800'
                   : 'bg-gray-100 text-gray-600'
-              }`}>
+                }`}>
                 View All
               </div>
             </div>
           </Link>
 
           {/* Assigned Tasks Card */}
-          <Link 
+          <Link
             to="/dashboard/assigned"
             className="group bg-gradient-to-r from-indigo-50 to-indigo-100 border border-indigo-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 hover:border-indigo-300 hover:scale-[1.02]"
           >
@@ -301,70 +303,68 @@ export default function Dashboard() {
             <div className="flex items-center gap-2 justify-between">
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-3 mt-1">
-                  <span className="text-xs bg-indigo-100 rounded-lg text-indigo-800 px-2 py-1 text-center">
-                    {stats.assignedTasks && stats.assignedTasks - stats.completedTasks} pending
-                  </span>
-                  <span className="text-xs bg-emerald-100 text-emerald-800 px-2 py-1 rounded-lg text-center">
-                    {stats.completedTasks} completed
-                  </span>
+                  <div>
+                    <p className="text-2xl font-bold text-gray-900">{stats.assignedTasks}</p>
+                    <p className="text-sm text-gray-600 mt-1">
+                      {stats.assignedTasks === 1 ? '1 task assigned' : `${stats.assignedTasks} tasks assigned`}
+                    </p>
+                  </div>
+                  <div className={`px-3 py-1 text-center rounded-full text-sm font-medium ${stats.assignedTasks > 0
+                    ? 'bg-blue-100 text-blue-800'
+                    : 'bg-gray-100 text-gray-600'
+                    }`}>
+                    View All
+                  </div>
                 </div>
               </div>
             </div>
           </Link>
 
           {/* Overdue Tasks Card */}
-          <Link 
+          <Link
             to="/dashboard/overdue"
-            className={`group rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] ${
-              stats.overdueTasks > 0 
-                ? 'bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 hover:border-red-300' 
+            className={`group rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-300 hover:scale-[1.02] ${stats.overdueTasks > 0
+                ? 'bg-gradient-to-r from-red-50 to-orange-50 border border-red-200 hover:border-red-300'
                 : 'bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200 hover:border-emerald-300'
-            }`}
+              }`}
           >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className={`p-2 rounded-lg ${
-                  stats.overdueTasks > 0 
-                    ? 'bg-red-100 group-hover:bg-red-200' 
+                <div className={`p-2 rounded-lg ${stats.overdueTasks > 0
+                    ? 'bg-red-100 group-hover:bg-red-200'
                     : 'bg-emerald-100 group-hover:bg-emerald-200'
-                } transition-colors`}>
-                  <AlertCircle className={`w-6 h-6 ${
-                    stats.overdueTasks > 0 ? 'text-red-600' : 'text-emerald-600'
-                  }`} />
+                  } transition-colors`}>
+                  <AlertCircle className={`w-6 h-6 ${stats.overdueTasks > 0 ? 'text-red-600' : 'text-emerald-600'
+                    }`} />
                 </div>
-                <h3 className={`font-semibold ${
-                  stats.overdueTasks > 0 ? 'text-gray-900' : 'text-gray-900'
-                }`}>
+                <h3 className={`font-semibold ${stats.overdueTasks > 0 ? 'text-gray-900' : 'text-gray-900'
+                  }`}>
                   Overdue Tasks
                 </h3>
               </div>
-              <ArrowRight className={`w-5 h-5 transition-all ${
-                stats.overdueTasks > 0 
-                  ? 'text-gray-400 group-hover:text-red-600 group-hover:translate-x-1' 
+              <ArrowRight className={`w-5 h-5 transition-all ${stats.overdueTasks > 0
+                  ? 'text-gray-400 group-hover:text-red-600 group-hover:translate-x-1'
                   : 'text-gray-400 group-hover:text-emerald-600 group-hover:translate-x-1'
-              }`} />
+                }`} />
             </div>
             <div className="flex items-center justify-between">
               <div>
-                <p className={`text-2xl font-bold ${
-                  stats.overdueTasks > 0 ? 'text-red-700' : 'text-emerald-700'
-                }`}>
+                <p className={`text-2xl font-bold ${stats.overdueTasks > 0 ? 'text-red-700' : 'text-emerald-700'
+                  }`}>
                   {stats.overdueTasks}
                 </p>
-                <p className={`text-sm mt-1 ${
-                  stats.overdueTasks > 0 ? 'text-red-600' : 'text-emerald-600'
-                }`}>
-                  {stats.overdueTasks > 0 
+                <p className={`text-sm mt-1 ${stats.overdueTasks > 0 ? 'text-red-600' : 'text-emerald-600'
+                  }`}>
+                  {stats.overdueTasks > 0
                     ? 'Tasks past deadline'
                     : 'All tasks on schedule!'
                   }
                 </p>
               </div>
-              <div className={`px-3 py-1 rounded-lg text-center text-sm font-medium ${
-                stats.overdueTasks > 0 
-                  ? 'bg-red-100 text-red-800' 
+              <div className={`px-3 py-1 rounded-lg text-center text-sm font-medium ${stats.overdueTasks > 0
+                  ? 'bg-red-100 text-red-800'
                   : 'bg-emerald-100 text-emerald-800'
-              }`}>
+                }`}>
                 {stats.overdueTasks > 0 ? 'Review Now' : 'View Details'}
               </div>
             </div>
@@ -421,7 +421,7 @@ export default function Dashboard() {
                   Showing {filteredTasks.length} of {stats.totalTasks} tasks
                 </p>
               </div>
-              
+
               {/* Filters and Search */}
               <div className="flex flex-col sm:flex-row gap-3">
                 {/* Search */}
@@ -431,13 +431,13 @@ export default function Dashboard() {
                     type="text"
                     placeholder="Search tasks..."
                     value={filters.search}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                       setFilters(prev => ({ ...prev, search: e.target.value }))
                     }
                     className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
                   />
                 </div>
-                
+
                 {/* Filter Dropdown */}
                 <div className="relative">
                   <button
@@ -448,11 +448,11 @@ export default function Dashboard() {
                     <span className="text-gray-700 text-sm">Filter</span>
                     <ChevronRight className={`w-4 h-4 text-gray-500 transition-transform ${isFilterOpen ? 'rotate-90' : ''}`} />
                   </button>
-                  
+
                   {isFilterOpen && (
                     <>
-                      <div 
-                        className="fixed inset-0 z-40" 
+                      <div
+                        className="fixed inset-0 z-40"
                         onClick={() => setIsFilterOpen(false)}
                       />
                       <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50 py-2">
@@ -480,6 +480,31 @@ export default function Dashboard() {
                             </button>
                           ))}
                         </div>
+                        <div className="border-t px-4 py-2">
+                          <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2">Sort</h4>
+                          <button
+                            onClick={() =>
+                              setFilters(prev => ({
+                                ...prev,
+                                sort: { field: 'dueDate', order: 'asc' }
+                              }))
+                            }
+                            className={`w-full text-left px-2 py-1.5 rounded text-sm mb-1 ${filters.sort.order === 'asc' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-50'}`}
+                          >
+                            Asending
+                          </button>
+                          <button
+                            onClick={() =>
+                              setFilters(prev => ({
+                                ...prev,
+                                sort: { field: 'dueDate', order: 'desc' }
+                              }))
+                            }
+                            className={`w-full text-left px-2 py-1.5 rounded text-sm mb-1 ${filters.sort.order === 'desc' ? 'bg-blue-50 text-blue-600' : 'text-gray-700 hover:bg-gray-50'}`}
+                          >
+                            Descending
+                          </button>
+                        </div>
                       </div>
                     </>
                   )}
@@ -487,7 +512,7 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          
+
           {/* Tasks Grid */}
           <div className="p-5">
             {filteredTasks.length === 0 ? (
@@ -503,7 +528,7 @@ export default function Dashboard() {
                 </p>
                 {(filters.status !== "all" || filters.priority !== "all" || filters.search) && (
                   <button
-                    onClick={() => setFilters({ status: "all", priority: "all", search: "" })}
+                    onClick={() => setFilters({ status: "all", priority: "all", search: "", sort: { order: 'asc', field: 'dueDate' } })}
                     className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
                   >
                     Clear all filters
@@ -539,8 +564,8 @@ export default function Dashboard() {
             </span>
           </div>
           <div className="text-xs text-gray-500">
-            Data refreshes automatically • Last sync: {new Date().toLocaleTimeString([], { 
-              hour: '2-digit', 
+            Data refreshes automatically • Last sync: {new Date().toLocaleTimeString([], {
+              hour: '2-digit',
               minute: '2-digit',
               second: '2-digit'
             })}
