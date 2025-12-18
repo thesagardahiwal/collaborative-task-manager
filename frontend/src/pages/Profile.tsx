@@ -2,7 +2,7 @@ import { useProfile } from "../hooks/useProfile";
 import { useState, useEffect } from "react";
 import Button from "../components/Button";
 import Input from "../components/Input";
-import { Loader2, Edit2, Check, X, User, Mail, Shield, Lock } from "lucide-react";
+import { Loader2, Edit2, Check, X, User, Mail, Shield } from "lucide-react";
 
 export default function Profile() {
   const { profileQuery, updateMutation } = useProfile();

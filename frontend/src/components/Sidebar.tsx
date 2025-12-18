@@ -1,6 +1,5 @@
 import { NavLink } from "react-router-dom";
 import { X } from "lucide-react";
-import { useCallback } from "react";
 
 interface SidebarProps {
   isOpen?: boolean;
