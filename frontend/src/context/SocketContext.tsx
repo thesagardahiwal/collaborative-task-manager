@@ -17,7 +17,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     if (!user?._id) return;
 
     // Create socket only AFTER login
-    socketRef.current = io("http://localhost:8000", {
+    socketRef.current = io(import.meta.env.VITE_BACKEND_URL, {
       withCredentials: true,
       auth: {
         userId: user._id,

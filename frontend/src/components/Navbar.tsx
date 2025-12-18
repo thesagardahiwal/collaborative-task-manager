@@ -32,10 +32,8 @@ export default function Navbar({ onMenuClick, onNotificationClick, notificationC
   }, []);
 
   const handleLogout = () => {
-    // Clear user data from localStorage
-    localStorage.removeItem('user');
+    localStorage.clear();
     sessionStorage.clear();
-    // Redirect to login page
     window.location.href = '/';
   };
 
@@ -129,7 +127,7 @@ export default function Navbar({ onMenuClick, onNotificationClick, notificationC
                     </div>
                     
                     <button
-                      onClick={handleLogout}
+                      onClick={() => handleLogout}
                       className="w-full flex items-center gap-3 p-4 text-left text-red-600 hover:bg-red-50 transition-colors rounded-b-lg"
                     >
                       <LogOut className="w-5 h-5" />

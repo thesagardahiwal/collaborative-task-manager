@@ -8,21 +8,24 @@ type User = {
 
 type AuthContextType = {
   user: User | null;
-  setUser: (user: User | null) => void;
+  updateUser: (user: User) => void;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    const parsed = JSON.parse(localStorage.getItem("user") || '{}');
+    if (!parsed) return null;
+    return parsed;
+  });
 
-  useEffect(() => {
-    const stored = localStorage.getItem("user");
-    if (stored) setUser(JSON.parse(stored));
-  }, []);
+  const updateUser = (user: User) => {
+    setUser(() => user);
+  }
 
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
+    <AuthContext.Provider value={{ user, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

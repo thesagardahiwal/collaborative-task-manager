@@ -14,11 +14,12 @@ export default function Sidebar({ isOpen = true, onClose }: SidebarProps) {
     }
   };
 
-  const handleLogout = useCallback(() => {
+  const handleLogout = () => {
     localStorage.removeItem("user");
     sessionStorage.clear();
     window.location.href = "/";
-  }, []);
+  };
+
   const navLinks = (
     <nav className="flex flex-col mt-4 gap-1 px-4">
       <NavLink

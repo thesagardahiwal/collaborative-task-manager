@@ -7,7 +7,7 @@ import { useAuthContext } from "../context/AuthContext";
 
 export default function Login() {
     const { loginMutation } = useAuth();
-    const { setUser } = useAuthContext();
+    const { updateUser } = useAuthContext();
     const [form, setForm] = useState({ email: "", password: "" });
     const navigate = useNavigate();
     
@@ -15,7 +15,7 @@ export default function Login() {
         loginMutation.mutate(form, {
             onSuccess: (res: any) => {
                 localStorage.setItem("user", JSON.stringify(res.data.user));
-                setUser(res.data.user);
+                updateUser(res.data.user);
                 navigate("/dashboard");
             },
             onError: (res: any) => {
