@@ -13,21 +13,21 @@ The platform enables teams to create, assign, track, and collaborate on tasks in
 ## 🗂️ Task Management
 - Full CRUD operations for tasks
 - Task attributes:
--- Title (max 100 chars)
--- Description
--- Due date
--- Priority (Low, Medium, High, Urgent)
--- Status (To Do, In Progress, Review, Completed)
--- Creator
--- Assignee (supports assign, reassign & unassign)
+  - Title (max 100 chars)
+  - Description
+  - Due date
+  - Priority (Low, Medium, High, Urgent)
+  -  Status (To Do, In Progress, Review, Completed)
+  - Creator
+  - Assignee (supports assign, reassign & unassign)
 
 ## ⚡ Real-Time Collaboration (Socket.io)
 
 - Live updates when tasks are:
--- Created
--- Updated
--- Assigned / Unassigned
--- Deleted
+  - Created
+  - Updated
+  - Assigned / Unassigned
+  - Deleted
 
 - Real-time in-app notifications
 - Missed notifications are preserved in state
@@ -35,9 +35,9 @@ The platform enables teams to create, assign, track, and collaborate on tasks in
 ## 📊 Dashboard & Views
 - Dashboard overview with statistics
 - Dedicated views:
--- Tasks created by me
--- Tasks assigned to me
--- Overdue tasks
+  - Tasks created by me
+  - Tasks assigned to me
+  - Overdue tasks
 - Filtering by status and priority
 - Sorting by due date (ascending / descending)
 
@@ -109,11 +109,11 @@ The platform enables teams to create, assign, track, and collaborate on tasks in
 
 ## ⚡ Real-Time Events (Socket.io)
 #### Event Type	Description
-TASK_CREATED	Task created
-TASK_UPDATED	Task updated
-TASK_ASSIGNED	Task assigned to a user
-TASK_UNASSIGNED	Task unassigned
-TASK_DELETED	Task deleted
+- TASK_CREATED	Task created
+- TASK_UPDATED	Task updated
+- TASK_ASSIGNED	Task assigned to a user
+- TASK_UNASSIGNED	Task unassigned
+- TASK_DELETED	Task deleted
 
 Notifications are emitted from the backend and consumed by the frontend via a centralized Socket Context.
 
@@ -131,15 +131,15 @@ Run Tests
 npm test
 
 ## ⚙️ Environment Variables
-Backend (.env)
-PORT=8000
-MONGO_URI=your_mongodb_atlas_uri
-JWT_SECRET=your_secret
-CLIENT_URL = https://collaborative-task-manager-nine.vercel.app
-NODE_ENV=production
+#### Backend (.env)
+- PORT=8000
+- MONGO_URI=your_mongodb_atlas_uri
+- JWT_SECRET=your_secret
+- CLIENT_URL = https://collaborative-task-manager-nine.vercel.app
+- NODE_ENV=production
 
-Frontend (.env)
-VITE_API_URL = https://collaborative-task-manager-c6ew.onrender.com
+#### Frontend (.env)
+- VITE_API_URL = https://collaborative-task-manager-c6ew.onrender.com
 
 ## 🚀 Local Setup
 Backend
