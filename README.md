@@ -128,8 +128,9 @@ Covered:
 - Socket event emission
 
 Run Tests
+```bash
 npm test
-
+```
 ## ⚙️ Environment Variables
 #### Backend (.env)
 - PORT=8000
@@ -142,16 +143,18 @@ npm test
 - VITE_API_URL = https://collaborative-task-manager-c6ew.onrender.com
 
 ## 🚀 Local Setup
-Backend
+### Backend
+```bash
 cd backend
 npm install
 npm run dev
-
-## Frontend
+```
+### Frontend
+```bash
 cd frontend
 npm install
 npm run dev
-
+```
 ## 🌍 Live Deployment
 
 Frontend: https://collaborative-task-manager-nine.vercel.app
